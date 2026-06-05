@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>판매 페이지 이미지 컷 분리 도구</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="workspace">
+      <div class="panel controls">
+        <p class="eyebrow">Sample Image Cutter</p>
+        <h1>판매 페이지 컷 분리 실행 도우미</h1>
+        <p class="lead">URL과 상품명을 넣으면 로컬 프로그램 실행 명령을 만들어줍니다.</p>
+
+        <label for="saleUrl">판매 페이지 주소</label>
+        <input id="saleUrl" type="url" placeholder="https://example.com/product/..." autocomplete="off" />
+
+        <label for="productName">상품명 폴더</label>
+        <input id="productName" type="text" placeholder="예: 핸드로션" autocomplete="off" />
+
+        <label for="outputPath">저장 기준 폴더</label>
+        <input id="outputPath" type="text" />
+
+        <div class="actions">
+          <button id="copyCommand" type="button">명령 복사</button>
+          <button id="resetForm" class="secondary" type="button">초기화</button>
+        </div>
+
+        <div class="notice">
+          Vercel 화면은 PC 폴더에 직접 저장할 수 없습니다. 실제 캡처와 저장은 아래 명령을 PowerShell에서 실행합니다.
+        </div>
+      </div>
+
+      <div class="panel result">
+        <div class="preview">
+          <div class="browser-bar">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="mock-page">
+            <div class="hero-cut">대표컷</div>
+            <div class="cut-grid">
+              <span>제품 확인</span>
+              <span>핵심 장점</span>
+              <span>디테일</span>
+              <span>사용 상황</span>
+              <span>신뢰 설득</span>
+            </div>
+          </div>
+        </div>
+
+        <h2>생성될 폴더</h2>
+        <ul class="folder-list">
+          <li>01_대표컷</li>
+          <li>02_제품_확인컷</li>
+          <li>03_핵심_장점컷</li>
+          <li>04_디테일컷</li>
+          <li>05_사용_상황컷</li>
+          <li>06_신뢰_구매_설득컷</li>
+          <li>99_미분류</li>
+          <li>_전체캡처</li>
+        </ul>
+
+        <h2>PowerShell 명령</h2>
+        <pre id="commandBox"></pre>
+        <p id="copyStatus" class="copy-status" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>
