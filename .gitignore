@@ -1,0 +1,5 @@
+*
+!/.gitignore
+!/README.md
+!/run_sale_page_cutter.ps1
+!/sale-page-cutter.js
