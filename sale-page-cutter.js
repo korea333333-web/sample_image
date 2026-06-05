@@ -23,8 +23,24 @@ function requirePackage(name) {
 const { chromium } = requirePackage("playwright");
 const sharp = requirePackage("sharp");
 
-const DEFAULT_OUTPUT =
-  "C:\\Users\\kikuke\\OneDrive\\바탕 화면\\AAA\\판매 페이지\\sample_image";
+function loadLocalEnv() {
+  const envPath = path.join(__dirname, ".env");
+  if (!fs.existsSync(envPath)) return;
+
+  for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const separator = trimmed.indexOf("=");
+    if (separator === -1) continue;
+    const key = trimmed.slice(0, separator).trim();
+    const value = trimmed.slice(separator + 1).trim().replace(/^["']|["']$/g, "");
+    if (key && process.env[key] === undefined) process.env[key] = value;
+  }
+}
+
+loadLocalEnv();
+
+const DEFAULT_OUTPUT = process.env.DOWNLOAD_DIR || path.join(__dirname, "image");
 
 const CATEGORIES = [
   { dir: "01_대표컷", label: "대표컷" },
