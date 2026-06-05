@@ -4,6 +4,7 @@ const resultBox = document.querySelector("#resultBox");
 const startCut = document.querySelector("#startCut");
 const resetForm = document.querySelector("#resetForm");
 const jobStatus = document.querySelector("#jobStatus");
+const appVersion = "2026-06-05.3";
 
 function safeFileName(value) {
   return String(value || "상품")
@@ -20,7 +21,7 @@ function setBusy(isBusy) {
 
 function setMessage(message) {
   jobStatus.textContent = message;
-  resultBox.textContent = message;
+  resultBox.textContent = `[버전 ${appVersion}]\n${message}`;
 }
 
 async function startJob() {

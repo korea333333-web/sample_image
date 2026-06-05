@@ -3,6 +3,8 @@ const { chromium: playwrightChromium } = require("playwright-core");
 const JSZip = require("jszip");
 const sharp = require("sharp");
 
+const APP_VERSION = "2026-06-05.3";
+
 const CATEGORIES = [
   "01_대표컷",
   "02_제품_확인컷",
@@ -140,7 +142,6 @@ async function launchBrowser() {
   return playwrightChromium.launch({
     args: chromium.args,
     executablePath,
-    headless: true,
   });
 }
 
@@ -215,7 +216,7 @@ async function handleCut(req, res) {
     if (browser) await browser.close().catch(() => {});
     res.status(500).json({
       error: "페이지 캡처에 실패했습니다. 로그인 필요, 차단, 너무 긴 페이지, 또는 Vercel 제한일 수 있습니다.",
-      detail: error.message,
+      detail: `[${APP_VERSION}] ${error.message}`,
     });
   }
 }
