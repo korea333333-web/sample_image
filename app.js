@@ -1,46 +1,77 @@
-const defaultOutput =
-  "C:\\Users\\kikuke\\OneDrive\\바탕 화면\\AAA\\판매 페이지\\sample_image";
-
 const saleUrl = document.querySelector("#saleUrl");
 const productName = document.querySelector("#productName");
-const outputPath = document.querySelector("#outputPath");
-const commandBox = document.querySelector("#commandBox");
-const copyCommand = document.querySelector("#copyCommand");
+const resultBox = document.querySelector("#resultBox");
+const startCut = document.querySelector("#startCut");
 const resetForm = document.querySelector("#resetForm");
-const copyStatus = document.querySelector("#copyStatus");
+const jobStatus = document.querySelector("#jobStatus");
 
-function psEscape(value) {
-  return String(value).replace(/'/g, "''");
+function safeFileName(value) {
+  return String(value || "상품")
+    .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_")
+    .replace(/\s+/g, " ")
+    .trim() || "상품";
 }
 
-function buildCommand() {
-  const url = saleUrl.value.trim() || "판매페이지주소";
-  const product = productName.value.trim() || "상품명";
-  const output = outputPath.value.trim() || defaultOutput;
-  return `cd 'C:\\Users\\kikuke\\OneDrive\\바탕 화면\\AAA\\판매 페이지\\sample_image'\n.\\run_sale_page_cutter.ps1\n\n또는 직접 실행:\n& 'C:\\Users\\kikuke\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe' .\\sale-page-cutter.js --url '${psEscape(url)}' --product '${psEscape(product)}' --out '${psEscape(output)}'`;
+function setBusy(isBusy) {
+  startCut.disabled = isBusy;
+  resetForm.disabled = isBusy;
+  startCut.textContent = isBusy ? "분리 중..." : "컷 분리 시작";
 }
 
-function render() {
-  commandBox.textContent = buildCommand();
-  copyStatus.textContent = "";
+function setMessage(message) {
+  jobStatus.textContent = message;
+  resultBox.textContent = message;
 }
 
-async function copyToClipboard() {
-  await navigator.clipboard.writeText(commandBox.textContent);
-  copyStatus.textContent = "명령을 복사했습니다.";
+async function startJob() {
+  const url = saleUrl.value.trim();
+  const product = productName.value.trim();
+
+  if (!/^https?:\/\//i.test(url)) {
+    setMessage("http 또는 https로 시작하는 판매 페이지 주소를 입력하세요.");
+    saleUrl.focus();
+    return;
+  }
+
+  setBusy(true);
+  setMessage("페이지를 열고 이미지를 불러오는 중입니다. 긴 상세페이지는 시간이 걸릴 수 있습니다.");
+
+  try {
+    const response = await fetch("/api/cut", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, product }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || error.error || "작업에 실패했습니다.");
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = downloadUrl;
+    anchor.download = `${safeFileName(product)}.zip`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(downloadUrl);
+    setMessage("완료했습니다. ZIP 파일 다운로드가 시작됐습니다.");
+  } catch (error) {
+    setMessage(`실패했습니다: ${error.message}`);
+  } finally {
+    setBusy(false);
+  }
 }
 
 function reset() {
   saleUrl.value = "";
   productName.value = "";
-  outputPath.value = defaultOutput;
-  render();
+  setMessage("대기 중입니다. 판매 페이지 주소와 상품명을 입력한 뒤 컷 분리를 시작하세요.");
 }
 
-saleUrl.addEventListener("input", render);
-productName.addEventListener("input", render);
-outputPath.addEventListener("input", render);
-copyCommand.addEventListener("click", copyToClipboard);
+startCut.addEventListener("click", startJob);
 resetForm.addEventListener("click", reset);
 
 reset();

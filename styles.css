@@ -105,6 +105,11 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  opacity: 0.68;
+  cursor: progress;
+}
+
 button:hover {
   background: var(--accent-dark);
 }
@@ -126,6 +131,14 @@ button.secondary:hover {
   background: #fff7e4;
   color: #5c4516;
   line-height: 1.55;
+}
+
+.job-status {
+  min-height: 24px;
+  margin: 14px 0 0;
+  color: var(--blue);
+  font-weight: 700;
+  line-height: 1.5;
 }
 
 .preview {
@@ -227,13 +240,6 @@ pre {
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
-}
-
-.copy-status {
-  min-height: 24px;
-  margin: 10px 0 0;
-  color: var(--blue);
-  font-weight: 700;
 }
 
 @media (max-width: 860px) {

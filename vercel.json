@@ -1,3 +1,9 @@
 {
-  "cleanUrls": true
+  "cleanUrls": true,
+  "functions": {
+    "api/cut.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  }
 }

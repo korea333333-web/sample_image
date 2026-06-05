@@ -5,5 +5,8 @@
 !/styles.css
 !/app.js
 !/vercel.json
+!/package.json
+!/api/
+!/api/**
 !/run_sale_page_cutter.ps1
 !/sale-page-cutter.js
